@@ -1,1 +1,1 @@
-# notion-reads-chrome-extension
+# notion reads chrome extension
