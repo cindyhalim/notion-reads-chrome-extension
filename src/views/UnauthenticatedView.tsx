@@ -1,7 +1,19 @@
 import React from "react";
 import { BaseView } from "../components";
 
+const NOTION_AUTHORIZATION_BASE_URL =
+  "https://api.notion.com/v1/oauth/authorize";
+
 export default function UnauthenticatedView() {
+  const urlParams = new URLSearchParams({
+    client_id: process.env.REACT_APP_NOTION_CLIENT_ID || "",
+    redirect_uri: "https://notion-kindle.netlify.app/redirect",
+    response_type: "code",
+    owner: "user",
+  });
+
+  const notionAuthorizeUrl = `${NOTION_AUTHORIZATION_BASE_URL}?${urlParams.toString()}`;
+
   return (
     <BaseView
       emoji="🧐"
@@ -22,7 +34,7 @@ export default function UnauthenticatedView() {
         </>
       }
       button={{
-        link: "https://api.notion.com/v1/oauth/authorize",
+        link: notionAuthorizeUrl,
         text: "Authorize Notion",
       }}
     />
