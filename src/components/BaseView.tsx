@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "./Button";
 
 type BaseViewProps = {
   emoji: string;
@@ -25,18 +26,7 @@ export default function BaseView({
         </h2>
         <h3 className="font-base text-sm text-neutral-600 mb-8">{subtitle}</h3>
       </div>
-      {button && (
-        <div className="rounded-md bg-neutral-800 hover:bg-neutral-600 py-2 px-4">
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href={button.link}
-            className="text-white text-sm font-semibold"
-          >
-            {button.text}
-          </a>
-        </div>
-      )}
+      {button && <Button link={button.link}>{button.text}</Button>}
     </div>
   );
 }
