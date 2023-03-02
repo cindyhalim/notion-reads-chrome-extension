@@ -7,7 +7,9 @@ import UnauthenticatedView from "../views/UnauthenticatedView";
 const INTERVAL_DURATION_IN_MS = 10 * 1000;
 
 export default function AuthWrapper({ children }: React.PropsWithChildren) {
-  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>();
+  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean | null>(
+    null
+  );
 
   React.useEffect(() => {
     const interval = setInterval(async () => {
@@ -25,6 +27,10 @@ export default function AuthWrapper({ children }: React.PropsWithChildren) {
     };
     getIsAuthenticated();
   }, []);
+
+  if (isAuthenticated === null) {
+    return null;
+  }
 
   if (!isAuthenticated) {
     return <UnauthenticatedView />;
