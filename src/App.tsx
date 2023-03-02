@@ -1,10 +1,16 @@
 import React from "react";
-import UnauthenticatedView from "./views/UnauthenticatedView";
+
+import AuthWrapper from "./containers/AuthWrapper";
+import BookView from "./views/BookView";
+import Header from "./views/Header";
 
 function App() {
   return (
     <div style={{ height: "500px", width: "400px" }}>
-      <UnauthenticatedView />
+      <AuthWrapper>
+        <Header />
+        <BookView />
+      </AuthWrapper>
     </div>
   );
 }

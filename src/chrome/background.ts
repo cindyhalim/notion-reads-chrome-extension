@@ -1,3 +1,6 @@
+import authenticate from "../utils/authentication";
+import { TOKEN_KEY } from "../utils/constants";
+
 const filter = {
   url: [
     {
@@ -18,16 +21,8 @@ function getCodeFromUrlParams(url: string) {
   return splitFromOtherParams[0];
 }
 
-const TOKEN_KEY = "n__at";
-async function getAccessToken() {
-  const accessToken = await chrome.storage.sync
-    .get([TOKEN_KEY])
-    .then((value) => value?.[TOKEN_KEY]?.accessToken ?? null);
-  return accessToken;
-}
-
 chrome.webNavigation.onDOMContentLoaded.addListener(async function (data) {
-  const isAuthenticated = await getAccessToken();
+  const isAuthenticated = await authenticate.getIsAuthenticated();
   if (isAuthenticated) {
     return;
   }
