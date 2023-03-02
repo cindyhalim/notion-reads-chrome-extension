@@ -8,13 +8,13 @@ import {
 const filter = {
   url: [
     {
-      urlMatches: "https://notion-kindle.netlify.app/redirect?",
+      urlMatches: "https://notion-kindle.netlify.app/auth/success",
     },
   ],
 };
 
 function getCodeFromUrlParams(url: string) {
-  // url sample: "https://notion-kindle.netlify.app/redirect?code=<uuid>&state="
+  // url sample: "https://notion-kindle.netlify.app/auth/success?code=<uuid>&state="
 
   const withBeforeCodeParamRemoved = url.split("code=")?.[1];
 
@@ -39,15 +39,18 @@ chrome.webNavigation.onDOMContentLoaded.addListener(async function (data) {
 
   if (code) {
     try {
-      const response = await fetch(`${serviceUrl}/authenticate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code,
-        }),
-      }).then((data) => data.json());
+      const response = await fetch(
+        `${serviceUrl}/authenticate/?mode=extension`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code,
+          }),
+        }
+      ).then((data) => data.json());
       await chrome.storage.sync.set({
         [TOKEN_KEY]: response.accessToken,
         [WORKSPACE_NAME_KEY]: response.workspaceName,

@@ -7,7 +7,7 @@ const NOTION_AUTHORIZATION_BASE_URL =
 export default function UnauthenticatedView() {
   const urlParams = new URLSearchParams({
     client_id: process.env.REACT_APP_NOTION_CLIENT_ID || "",
-    redirect_uri: "https://notion-kindle.netlify.app/redirect",
+    redirect_uri: "https://notion-kindle.netlify.app/auth/success",
     response_type: "code",
     owner: "user",
   });
