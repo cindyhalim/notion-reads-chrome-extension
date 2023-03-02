@@ -1,14 +1,15 @@
 import { TOKEN_KEY } from "./constants";
 
-async function getAccessToken() {
+async function getAccessToken(): Promise<string | null> {
   const accessToken = await chrome.storage.sync
     .get([TOKEN_KEY])
-    .then((value) => value?.[TOKEN_KEY]?.accessToken ?? null);
+    .then((value) => value?.[TOKEN_KEY] ?? null);
   return accessToken;
 }
 
 async function getIsAuthenticated() {
-  return await getAccessToken();
+  const hasAccessToken = await getAccessToken();
+  return Boolean(hasAccessToken);
 }
 
 const authenticate = {

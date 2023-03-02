@@ -28,10 +28,6 @@ export default function AuthWrapper({ children }: React.PropsWithChildren) {
     getIsAuthenticated();
   }, []);
 
-  if (isAuthenticated === null) {
-    return null;
-  }
-
   if (!isAuthenticated) {
     return <UnauthenticatedView />;
   }

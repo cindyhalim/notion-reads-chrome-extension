@@ -1,5 +1,9 @@
 import authenticate from "../utils/authentication";
-import { TOKEN_KEY } from "../utils/constants";
+import {
+  TOKEN_KEY,
+  WORKSPACE_EMOJI_KEY,
+  WORKSPACE_NAME_KEY,
+} from "../utils/constants";
 
 const filter = {
   url: [
@@ -34,9 +38,8 @@ chrome.webNavigation.onDOMContentLoaded.addListener(async function (data) {
   const serviceUrl = process.env.REACT_APP_SERVICE_URL;
 
   if (code) {
-    let accessToken = null;
     try {
-      const result = await fetch(`${serviceUrl}/authenticate`, {
+      const response = await fetch(`${serviceUrl}/authenticate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,13 +48,13 @@ chrome.webNavigation.onDOMContentLoaded.addListener(async function (data) {
           code,
         }),
       }).then((data) => data.json());
-      accessToken = result;
+      await chrome.storage.sync.set({
+        [TOKEN_KEY]: response.accessToken,
+        [WORKSPACE_NAME_KEY]: response.workspaceName,
+        [WORKSPACE_EMOJI_KEY]: response.workspaceIcon,
+      });
     } catch (e) {
       console.warn("Error authenticating to Notion ");
-    }
-
-    if (accessToken) {
-      chrome.storage.sync.set({ [TOKEN_KEY]: accessToken });
     }
   }
 }, filter);
