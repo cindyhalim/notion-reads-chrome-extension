@@ -13,8 +13,8 @@ function validateISBN13(possibleISBN13: string) {
   const checkDigit = cleanedPossibleISBN13[checkDigitIndex];
   const restOfDigits = cleanedPossibleISBN13.slice(0, checkDigitIndex);
 
+  // evaluate ISBN13: https://isbn-information.com/the-13-digit-isbn.html
   let sumOfWeights = 0;
-  // https://isbn-information.com/the-13-digit-isbn.html
   for (let i = 0; i < restOfDigits.length; i++) {
     const digitNum = Number(restOfDigits[i]);
     if (i % 2 === 0) {
@@ -23,8 +23,6 @@ function validateISBN13(possibleISBN13: string) {
       sumOfWeights += digitNum * 3;
     }
   }
-
-  // get remainder
   const remainder = sumOfWeights % 10;
   const correctCheckDigit = 10 - remainder;
 
@@ -42,8 +40,7 @@ async function findISBN13(tabId: number) {
     tabContent[0].result.split(isbnKeywordRegExp);
 
   if (tabContentSplitByISBNKeyword.length === 1) {
-    console.log("No ISBN found");
-    return;
+    return null;
   }
 
   /**
@@ -81,8 +78,7 @@ async function findISBN13(tabId: number) {
   );
 
   if (!validISBNs.length) {
-    console.log("No ISBN found");
-    return;
+    return null;
   }
 
   return validISBNs[0];
