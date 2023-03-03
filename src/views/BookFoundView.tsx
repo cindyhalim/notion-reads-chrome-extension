@@ -1,24 +1,56 @@
+import React from "react";
 import { Button, ButtonType } from "../components";
+import request from "../utils/request";
 
 type BookFoundViewProps = {
   isbn: string;
 };
 
-export default function BookFoundView({ isbn: string }: BookFoundViewProps) {
-  const data = {
-    bookCoverUrl:
-      "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1443231179i/12497.jpg",
-    title: "No Country for Old Men",
-    author: "Cormac McCarthy",
-    pages: 309,
-    goodreadsUrl: "",
-    genres: ["fiction", "thriller", "mystery"],
-  };
+type BookDetails = {
+  isbn: string;
+  title: string;
+  author: string;
+  goodreadsUrl: string;
+  pages: string;
+  genre: string[];
+  coverUrl: string;
+};
+
+type GetBookDetailsResponse = {
+  data: BookDetails;
+};
+
+export default function BookFoundView({ isbn }: BookFoundViewProps) {
+  const [data, setData] = React.useState<BookDetails | null>(null);
+
+  React.useEffect(() => {
+    async function getBookDetails() {
+      const response = await request.fetch<GetBookDetailsResponse>(
+        `${process.env.REACT_APP_SERVICE_URL}/book/?isbn=${isbn}`,
+        {
+          method: "GET",
+        }
+      );
+
+      const bookDetails = response.data;
+      setData(bookDetails);
+    }
+
+    if (isbn) {
+      getBookDetails();
+    }
+  }, [isbn]);
+
+  if (!data) {
+    // TODO: implement better loading
+    return <div>{`Loading... ${isbn}`}</div>;
+  }
+
   return (
     <div className="flex justify-center">
       <div className=" w-11/12 relative top-10 rounded-lg border px-5 pb-4 shadow-md ">
         <img
-          src={data.bookCoverUrl}
+          src={data.coverUrl}
           alt="book-cover"
           className="absolute z-10 left-5 -top-5 rounded-lg h-36 w-26"
         />
@@ -33,7 +65,7 @@ export default function BookFoundView({ isbn: string }: BookFoundViewProps) {
               pages
             </p>
           </div>
-          {data.genres.map((genre, idx) => (
+          {data.genre.map((genre, idx) => (
             <div
               key={idx}
               className="cursor-default rounded-md bg-neutral-100 p-1 mr-1 mt-1"

@@ -1,8 +1,9 @@
 import { NOTION_REDIRECT_URL } from "../utils/constants";
-import authenticateWithNotion from "./helpers/authenticate";
-import findISBN13 from "./helpers/findISBN13";
+import authenticateWithNotion from "./utils/authenticate";
+import findISBN13 from "./utils/findISBN13";
 
 const VALID_SITE_PREFIX = "https://";
+
 const filter = {
   url: [
     {
