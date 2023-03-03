@@ -1,5 +1,6 @@
 import React from "react";
 import { BaseView } from "../components";
+import { NOTION_REDIRECT_URL } from "../utils/constants";
 
 const NOTION_AUTHORIZATION_BASE_URL =
   "https://api.notion.com/v1/oauth/authorize";
@@ -7,7 +8,7 @@ const NOTION_AUTHORIZATION_BASE_URL =
 export default function UnauthenticatedView() {
   const urlParams = new URLSearchParams({
     client_id: process.env.REACT_APP_NOTION_CLIENT_ID || "",
-    redirect_uri: "https://notion-kindle.netlify.app/auth/success",
+    redirect_uri: NOTION_REDIRECT_URL,
     response_type: "code",
     owner: "user",
   });
@@ -25,7 +26,8 @@ export default function UnauthenticatedView() {
           <a
             target="_blank"
             rel="noreferrer"
-            href="https://api.notion.com/v1/oauth/authorize"
+            // TODO: add template url
+            href=""
             className="hover:text-neutral-500 underline underline-offset-1"
           >
             this Notion reads template

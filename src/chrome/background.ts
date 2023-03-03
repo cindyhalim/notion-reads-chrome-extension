@@ -1,63 +1,29 @@
-import authenticate from "../utils/authentication";
-import {
-  TOKEN_KEY,
-  WORKSPACE_EMOJI_KEY,
-  WORKSPACE_NAME_KEY,
-} from "../utils/constants";
+import { NOTION_REDIRECT_URL } from "../utils/constants";
+import authenticateWithNotion from "./helpers/authenticate";
+import findISBN13 from "./helpers/findISBN13";
 
+const VALID_SITE_PREFIX = "https://";
 const filter = {
   url: [
     {
-      urlMatches: "https://notion-kindle.netlify.app/auth/success",
+      urlPrefix: VALID_SITE_PREFIX,
     },
   ],
 };
-
-function getCodeFromUrlParams(url: string) {
-  // url sample: "https://notion-kindle.netlify.app/auth/success?code=<uuid>&state="
-
-  const withBeforeCodeParamRemoved = url.split("code=")?.[1];
-
-  if (!withBeforeCodeParamRemoved) {
-    return null;
-  }
-  const splitFromOtherParams = withBeforeCodeParamRemoved.split("&");
-  return splitFromOtherParams[0];
-}
-
 chrome.webNavigation.onDOMContentLoaded.addListener(async function (data) {
-  const isAuthenticated = await authenticate.getIsAuthenticated();
-  if (isAuthenticated) {
+  if (data.url.startsWith(NOTION_REDIRECT_URL)) {
+    await authenticateWithNotion(data.url);
     return;
   }
 
-  const code = getCodeFromUrlParams(data.url);
-  if (!code) {
-    return;
-  }
-  const serviceUrl = process.env.REACT_APP_SERVICE_URL;
-
-  if (code) {
-    try {
-      const response = await fetch(
-        `${serviceUrl}/authenticate/?mode=extension`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            code,
-          }),
-        }
-      ).then((data) => data.json());
-      await chrome.storage.sync.set({
-        [TOKEN_KEY]: response.accessToken,
-        [WORKSPACE_NAME_KEY]: response.workspaceName,
-        [WORKSPACE_EMOJI_KEY]: response.workspaceIcon,
-      });
-    } catch (e) {
-      console.warn("Error authenticating to Notion ");
-    }
-  }
+  findISBN13(data.tabId);
 }, filter);
+
+chrome.tabs.onActivated.addListener(function (activeInfo) {
+  chrome.tabs.get(activeInfo.tabId, function (currentTabInfo) {
+    // cannot execute script in chrome URLs
+    if (currentTabInfo.url?.startsWith(VALID_SITE_PREFIX)) {
+      findISBN13(activeInfo.tabId);
+    }
+  });
+});
