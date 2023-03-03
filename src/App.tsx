@@ -6,7 +6,12 @@ import Header from "./views/Header";
 
 function App() {
   return (
-    <div style={{ height: "500px", width: "400px" }}>
+    <div
+      style={{
+        height: "500px",
+        width: "400px",
+      }}
+    >
       <AuthWrapper>
         <Header />
         <BookView />

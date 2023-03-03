@@ -6,7 +6,7 @@ export default function NoBooksFoundView() {
     <BaseView
       emoji="😵‍💫"
       title="No books found"
-      subtitle="Is the tab you're on currently displaying a book?"
+      subtitle="Please navigate to a site that contains book details."
     />
   );
 }
