@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, ButtonType } from "../components";
+import Loading from "../components/Loading";
 import request from "../utils/request";
 
 type BookFoundViewProps = {
@@ -42,29 +43,34 @@ export default function BookFoundView({ isbn }: BookFoundViewProps) {
   }, [isbn]);
 
   if (!data) {
-    // TODO: implement better loading
-    return <div>{`Loading... ${isbn}`}</div>;
+    return (
+      <div className="flex flex-col">
+        <Loading dimensions="80px" />
+        <p className="font-semibold text-sm text-neutral-900 mt-4">
+          🔍 Looking up book details
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div className="flex justify-center">
-      <div className=" w-11/12 relative top-10 rounded-lg border px-5 pb-4 shadow-md ">
-        <img
-          src={data.coverUrl}
-          alt="book-cover"
-          className="absolute z-10 left-5 -top-5 rounded-lg h-36 w-26"
-        />
-        <div className="flex flex-wrap ml-28 mb-8">
-          <div>
-            <h2 className="text-lg font-bold mt-3">{data.title}</h2>
-            <h3 className="font-base text-md text-neutral-600 mb-1">
-              {data.author}
-            </h3>
-            <p className="text-xs">
-              <span className="font-semibold">{data.pages.toString()}</span>{" "}
-              pages
-            </p>
-          </div>
+    <div className="w-11/12 relative top-10 rounded-lg border px-5 pb-4 shadow-md">
+      <img
+        src={data.coverUrl}
+        alt="book-cover"
+        className="absolute z-10 left-5 -top-5 rounded-lg h-36 w-26 shadow-md"
+      />
+      <div className="flex flex-wrap ml-28 mb-8">
+        <div>
+          <h2 className="text-lg font-bold mt-3">{data.title}</h2>
+          <h3 className="font-base text-base text-neutral-800 mb-1">
+            {data.author}
+          </h3>
+          <p className="text-xs">
+            <span className="font-semibold">{data.pages.toString()}</span> pages
+          </p>
+        </div>
+        <div className="flex flex-wrap">
           {data.genre.map((genre, idx) => (
             <div
               key={idx}
@@ -74,12 +80,12 @@ export default function BookFoundView({ isbn }: BookFoundViewProps) {
             </div>
           ))}
         </div>
-        <Button link="">Add to reads list</Button>
-        <div className="mb-2" />
-        <Button type={ButtonType.SECONDARY} link={data.goodreadsUrl}>
-          View on Goodreads
-        </Button>
       </div>
+      <Button link="">Add to reads list</Button>
+      <div className="mb-2" />
+      <Button type={ButtonType.SECONDARY} link={data.goodreadsUrl || ""}>
+        View on Goodreads
+      </Button>
     </div>
   );
 }

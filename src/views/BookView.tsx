@@ -4,7 +4,7 @@ import BookFoundView from "./BookFoundView";
 import NoBooksFoundView from "./NoBooksFoundView";
 
 export default function BookView() {
-  const [ISBN, setISBN] = React.useState<string | null>();
+  const [ISBN, setISBN] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     async function getISBN(tabId: number) {
@@ -41,5 +41,9 @@ export default function BookView() {
     return <NoBooksFoundView />;
   }
 
-  return <BookFoundView isbn={ISBN} />;
+  return (
+    <div className="h-80 w-full flex justify-center items-center">
+      <BookFoundView isbn={ISBN} />
+    </div>
+  );
 }
