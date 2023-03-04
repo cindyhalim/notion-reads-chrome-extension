@@ -6,8 +6,9 @@ export enum ButtonType {
 }
 
 type ButtonProps = {
-  link: string;
+  link?: string;
   type?: ButtonType;
+  onClick?: () => void;
 };
 
 function getButtonStyles(type: ButtonType) {
@@ -27,21 +28,37 @@ function getButtonStyles(type: ButtonType) {
 
 export function Button({
   link,
+  onClick,
   type = ButtonType.PRIMARY,
   children,
 }: React.PropsWithChildren<ButtonProps>) {
   const { container, text } = getButtonStyles(type);
 
-  return (
-    <div className={`rounded-md py-2 px-4 text-center ${container}`}>
-      <a
-        target="_blank"
-        rel="noreferrer"
-        href={link}
-        className={`text-sm font-semibold ${text}`}
+  if (onClick) {
+    return (
+      <div
+        className={`rounded-md py-2 px-4 text-center ${container} text-sm font-semibold ${text} cursor-pointer`}
+        onClick={onClick}
       >
         {children}
-      </a>
-    </div>
-  );
+      </div>
+    );
+  }
+
+  if (link) {
+    return (
+      <div className={`rounded-md py-2 px-4 text-center ${container}`}>
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href={link}
+          className={`text-sm font-semibold ${text}`}
+        >
+          {children}
+        </a>
+      </div>
+    );
+  }
+
+  return null;
 }

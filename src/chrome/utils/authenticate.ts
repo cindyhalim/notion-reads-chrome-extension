@@ -4,6 +4,7 @@ import {
   WORKSPACE_EMOJI_KEY,
   WORKSPACE_NAME_KEY,
 } from "../../utils/constants";
+import request from "../../utils/request";
 
 function getCodeFromUrlParams(url: string) {
   // url sample: "https://notion-kindle.netlify.app/auth/success?code=<uuid>&state="
@@ -30,18 +31,13 @@ async function authenticateWithNotion(redirectUrl: string) {
 
   if (code) {
     try {
-      const response = await fetch(
-        `${serviceUrl}/authenticate/?mode=extension`,
-        {
+      const response = await request
+        .fetch(`${serviceUrl}/authenticate/?mode=extension`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            code,
-          }),
-        }
-      ).then((data) => data.json());
+          body: { code },
+        })
+        .then((data) => data.json());
+
       await chrome.storage.sync.set({
         [TOKEN_KEY]: response.accessToken,
         [WORKSPACE_NAME_KEY]: response.workspaceName,

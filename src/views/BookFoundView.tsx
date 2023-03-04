@@ -1,33 +1,28 @@
 import React from "react";
+import type {
+  BookDetails,
+  GetBookDetailsResponse,
+  SaveBookToReadListResponse,
+} from "../api/types";
 import { Button, ButtonType } from "../components";
 import Loading from "../components/Loading";
 import request from "../utils/request";
 
 type BookFoundViewProps = {
-  isbn: string;
+  ISBN: string;
+  databaseId: string | null;
 };
 
-type BookDetails = {
-  isbn: string;
-  title: string;
-  author: string;
-  goodreadsUrl: string;
-  pages: string;
-  genre: string[];
-  coverUrl: string;
-};
-
-type GetBookDetailsResponse = {
-  data: BookDetails;
-};
-
-export default function BookFoundView({ isbn }: BookFoundViewProps) {
+export default function BookFoundView({
+  ISBN,
+  databaseId,
+}: BookFoundViewProps) {
   const [data, setData] = React.useState<BookDetails | null>(null);
 
   React.useEffect(() => {
     async function getBookDetails() {
       const response = await request.fetch<GetBookDetailsResponse>(
-        `${process.env.REACT_APP_SERVICE_URL}/book/?isbn=${isbn}`,
+        `${process.env.REACT_APP_SERVICE_URL}/book/?isbn=${ISBN}`,
         {
           method: "GET",
         }
@@ -37,10 +32,10 @@ export default function BookFoundView({ isbn }: BookFoundViewProps) {
       setData(bookDetails);
     }
 
-    if (isbn) {
+    if (ISBN) {
       getBookDetails();
     }
-  }, [isbn]);
+  }, [ISBN]);
 
   if (!data) {
     return (
@@ -71,7 +66,7 @@ export default function BookFoundView({ isbn }: BookFoundViewProps) {
           </p>
         </div>
         <div className="flex flex-wrap">
-          {data.genre.map((genre, idx) => (
+          {data.genres.map((genre, idx) => (
             <div
               key={idx}
               className="cursor-default rounded-md bg-neutral-100 p-1 mr-1 mt-1"
@@ -81,7 +76,21 @@ export default function BookFoundView({ isbn }: BookFoundViewProps) {
           ))}
         </div>
       </div>
-      <Button link="">Add to reads list</Button>
+      <Button
+        onClick={async function () {
+          if (!!data) {
+            await request.fetch<SaveBookToReadListResponse>(
+              `${process.env.REACT_APP_SERVICE_URL}/read-list/${databaseId}/book`,
+              {
+                method: "PUT",
+                body: data,
+              }
+            );
+          }
+        }}
+      >
+        Add to reads list
+      </Button>
       <div className="mb-2" />
       <Button type={ButtonType.SECONDARY} link={data.goodreadsUrl || ""}>
         View on Goodreads

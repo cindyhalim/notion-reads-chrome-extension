@@ -3,7 +3,11 @@ import React from "react";
 import BookFoundView from "./BookFoundView";
 import NoBooksFoundView from "./NoBooksFoundView";
 
-export default function BookView() {
+type BookViewProps = {
+  databaseId: string | null;
+};
+
+export default function BookView({ databaseId }: BookViewProps) {
   const [ISBN, setISBN] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -43,7 +47,7 @@ export default function BookView() {
 
   return (
     <div className="h-80 w-full flex justify-center items-center">
-      <BookFoundView isbn={ISBN} />
+      <BookFoundView ISBN={ISBN} databaseId={databaseId} />
     </div>
   );
 }
