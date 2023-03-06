@@ -1,5 +1,3 @@
-const isbnKeywordRegExp = new RegExp(/isbn-13|isbn13|ISBN-13|isbn|ISBN/, "g");
-
 /**
  * ISBN-13 can be written the following ways:
  * 978-1-86197-876-9
@@ -8,7 +6,7 @@ const isbnKeywordRegExp = new RegExp(/isbn-13|isbn13|ISBN-13|isbn|ISBN/, "g");
  * 9781861978769
  */
 const isbn13RegExp = new RegExp(
-  /978-\d{10}|\978\d{10}|978-\d{1}-\d{5}-\d{3}-\d{1}|978\s\d{1}\s\d{5}\s\d{3}\s\d{1}/,
+  /978-\d{10}|978\d{10}|978-\d{1}-\d{5}-\d{3}-\d{1}|978\s\d{1}\s\d{5}\s\d{3}\s\d{1}/,
   "g"
 );
 
@@ -55,29 +53,11 @@ async function findISBN13(tabId: number) {
     func: getDOMContent,
   });
 
-  const tabContentSplitByISBNKeyword =
-    tabContent[0].result.split(isbnKeywordRegExp);
+  const possibleISBNs = tabContent?.[0].result.match(isbn13RegExp);
 
-  if (tabContentSplitByISBNKeyword.length === 1) {
+  if (!possibleISBNs) {
     return null;
   }
-
-  const possibleISBNs = tabContentSplitByISBNKeyword.reduce(
-    (prev, currContent, idx) => {
-      // skip the first index since that does not contain any ISBNs
-      if (idx === 0) {
-        return prev;
-      }
-
-      const isbn13Matches = currContent.match(isbn13RegExp);
-      if (isbn13Matches?.length) {
-        return [...prev, ...isbn13Matches];
-      }
-
-      return prev;
-    },
-    [] as string[]
-  );
 
   const validISBNs = possibleISBNs.filter((possibleISBN) =>
     validateISBN13(possibleISBN)
