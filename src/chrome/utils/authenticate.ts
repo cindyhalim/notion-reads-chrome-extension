@@ -31,12 +31,13 @@ async function authenticateWithNotion(redirectUrl: string) {
 
   if (code) {
     try {
-      const response = await request
-        .fetch(`${serviceUrl}/authenticate/?mode=extension`, {
+      const response = await request.fetch(
+        `${serviceUrl}/authenticate/?mode=extension`,
+        {
           method: "POST",
           body: { code },
-        })
-        .then((data) => data.json());
+        }
+      );
 
       await chrome.storage.sync.set({
         [TOKEN_KEY]: response.accessToken,
@@ -44,7 +45,7 @@ async function authenticateWithNotion(redirectUrl: string) {
         [WORKSPACE_EMOJI_KEY]: response.workspaceIcon,
       });
     } catch (e) {
-      console.warn("Error authenticating to Notion ");
+      console.warn("Error authenticating to Notion");
     }
   }
 }
