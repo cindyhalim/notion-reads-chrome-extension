@@ -17,7 +17,7 @@ function getDOMContent() {
 
 /**
  * Check if given 13 digit string number is a valid ISBN-13 based on
- * {@link https://isbn-information.com/the-13-digit-isbn.html| this guide}.
+ * {@link https://isbn-information.com/the-13-digit-isbn.html this guide}.
  * @param possibleISBN13 - contains 13 digit number defined by {@link isbn13RegExp | isbn13RegExp}.
  * @returns boolean
  */
@@ -42,8 +42,11 @@ function validateISBN13(possibleISBN13: string) {
     }
   }
   const remainder = sumOfWeights % 10;
-  const correctCheckDigit = 10 - remainder;
+  if (remainder === 0) {
+    return true;
+  }
 
+  const correctCheckDigit = 10 - remainder;
   return Number(checkDigit) === correctCheckDigit;
 }
 
