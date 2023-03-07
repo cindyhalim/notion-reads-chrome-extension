@@ -28,7 +28,7 @@ function getButtonStyles(type: ButtonType) {
       };
     default:
       return {
-        container: "bg-neutral-800 hover:bg-neutral-600",
+        container: "bg-neutral-800 hover:bg-neutral-600 disabled:opacity-60",
         text: "text-white ",
       };
   }

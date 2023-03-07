@@ -1,10 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
+
 import operations from "../api/operations";
-import type { SaveBookToReadListResponse } from "../api/types";
+
 import { BaseView, Button, ButtonType } from "../components";
 import Loading from "../components/Loading";
-import request from "../utils/request";
 
 type BookFoundViewProps = {
   ISBN: string;
@@ -104,6 +104,7 @@ export default function BookFoundView({
       </div>
     );
   }
+  console.log("hii error", error);
 
   if (error) {
     return (
