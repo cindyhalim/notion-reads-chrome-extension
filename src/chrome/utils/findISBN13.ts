@@ -1,12 +1,12 @@
 /**
- * ISBN-13 can be written the following ways:
+ * ISBN-13 always starts with 978 or 979 and can be written the following ways:
  * 978-1-86197-876-9
  * 978 1 86197 876 9
  * 978-1861978769
  * 9781861978769
  */
 const isbn13RegExp = new RegExp(
-  /978-\d{10}|978\d{10}|978-\d{1}-\d{5}-\d{3}-\d{1}|978\s\d{1}\s\d{5}\s\d{3}\s\d{1}/,
+  /978-\d{10}|978\s\d{10}|978\d{10}|978-\d{1}-\d{5}-\d{3}-\d{1}|978\s\d{1}\s\d{5}\s\d{3}\s\d{1}|979-\d{10}|979\s\d{10}|979\d{10}|979-\d{1}-\d{5}-\d{3}-\d{1}|979\s\d{1}\s\d{5}\s\d{3}\s\d{1}/,
   "g"
 );
 

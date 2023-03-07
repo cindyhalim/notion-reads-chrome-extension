@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Suspense } from "react";
+import Loading from "../components/Loading";
 
 import authenticate from "../utils/authentication";
 
@@ -28,9 +29,9 @@ export default function AuthWrapper({ children }: React.PropsWithChildren) {
     getIsAuthenticated();
   }, []);
 
-  if (!isAuthenticated) {
-    return <UnauthenticatedView />;
-  }
-
-  return <>{children}</>;
+  return (
+    <Suspense fallback={<Loading />}>
+      {isAuthenticated ? <>{children}</> : <UnauthenticatedView />}
+    </Suspense>
+  );
 }

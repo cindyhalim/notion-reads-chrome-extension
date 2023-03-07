@@ -1,10 +1,8 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
-import type {
-  BookDetails,
-  GetBookDetailsResponse,
-  SaveBookToReadListResponse,
-} from "../api/types";
-import { Button, ButtonType } from "../components";
+import operations from "../api/operations";
+import type { SaveBookToReadListResponse } from "../api/types";
+import { BaseView, Button, ButtonType } from "../components";
 import Loading from "../components/Loading";
 import request from "../utils/request";
 
@@ -13,31 +11,90 @@ type BookFoundViewProps = {
   databaseId: string | null;
 };
 
+type SaveButtonProps = {
+  isLoading: boolean;
+  isError: boolean;
+  isSuccess: boolean;
+  handleOnClick: () => void;
+};
+function SaveButton({
+  isLoading,
+  isError,
+  isSuccess,
+  handleOnClick,
+}: SaveButtonProps) {
+  const buttonType = isError ? ButtonType.ERROR : ButtonType.PRIMARY;
+  function getChildren() {
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center">
+          <Loading dimensions="20px" isDark={false} />
+          <span className="ml-2">Adding to reads...</span>
+        </div>
+      );
+    }
+
+    if (isError) {
+      return "Error adding to reads";
+    }
+
+    if (isSuccess) {
+      return "Successfully added to reads";
+    }
+
+    return "Add to reads";
+  }
+
+  return (
+    <Button
+      fullWidth
+      disabled={isLoading || isSuccess}
+      type={buttonType}
+      onClick={handleOnClick}
+    >
+      {getChildren()}
+    </Button>
+  );
+}
+
 export default function BookFoundView({
   ISBN,
   databaseId,
 }: BookFoundViewProps) {
-  const [data, setData] = React.useState<BookDetails | null>(null);
-
-  React.useEffect(() => {
-    async function getBookDetails() {
-      const response = await request.fetch<GetBookDetailsResponse>(
-        `${process.env.REACT_APP_SERVICE_URL}/book/?isbn=${ISBN}`,
-        {
-          method: "GET",
-        }
-      );
-
-      const bookDetails = response.data;
-      setData(bookDetails);
+  const [isError, setIsError] = React.useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
+  const { data, isLoading, error, refetch } = useQuery(
+    [operations.getBookDetails.key, ISBN],
+    {
+      queryFn: () => operations.getBookDetails.fn(ISBN),
+      enabled: !!ISBN,
+      cacheTime: 10000,
     }
+  );
 
-    if (ISBN) {
-      getBookDetails();
+  const { mutate, isLoading: isSavingBook } = useMutation({
+    mutationFn: operations.saveBookToReadList.fn,
+    onSuccess: () => {
+      setIsSuccess(true);
+    },
+    onError: () => {
+      setIsError(true);
+    },
+  });
+
+  function handleOnClick() {
+    setIsError(false);
+    setIsSuccess(false);
+
+    if (!!data) {
+      mutate({
+        databaseId,
+        body: data,
+      });
     }
-  }, [ISBN]);
+  }
 
-  if (!data) {
+  if (isLoading) {
     return (
       <div className="flex flex-col">
         <Loading dimensions="80px" />
@@ -48,25 +105,37 @@ export default function BookFoundView({
     );
   }
 
+  if (error) {
+    return (
+      <BaseView
+        emoji="🤭"
+        title="Error"
+        subtitle="Something went wrong upon retrieving book details. Please try again"
+        button={{ text: "Try again", onClick: refetch }}
+      />
+    );
+  }
+
   return (
     <div className="w-11/12 relative top-10 rounded-lg border px-5 pb-4 shadow-md">
       <img
-        src={data.coverUrl}
+        src={data?.coverUrl}
         alt="book-cover"
         className="absolute z-10 left-5 -top-5 rounded-lg h-36 w-26 shadow-md"
       />
       <div className="flex flex-wrap ml-28 mb-8">
         <div>
-          <h2 className="text-lg font-bold mt-3">{data.title}</h2>
+          <h2 className="text-lg font-bold mt-3">{data?.title}</h2>
           <h3 className="font-base text-base text-neutral-800 mb-1">
-            {data.author}
+            {data?.author}
           </h3>
           <p className="text-xs">
-            <span className="font-semibold">{data.pages.toString()}</span> pages
+            <span className="font-semibold">{data?.pages.toString()}</span>{" "}
+            pages
           </p>
         </div>
         <div className="flex flex-wrap">
-          {data.genres.map((genre, idx) => (
+          {data?.genres.map((genre, idx) => (
             <div
               key={idx}
               className="cursor-default rounded-md bg-neutral-100 p-1 mr-1 mt-1"
@@ -76,23 +145,14 @@ export default function BookFoundView({
           ))}
         </div>
       </div>
-      <Button
-        onClick={async function () {
-          if (!!data) {
-            await request.fetch<SaveBookToReadListResponse>(
-              `${process.env.REACT_APP_SERVICE_URL}/read-list/${databaseId}/book`,
-              {
-                method: "PUT",
-                body: data,
-              }
-            );
-          }
-        }}
-      >
-        Add to reads list
-      </Button>
+      <SaveButton
+        isLoading={isSavingBook}
+        isSuccess={isSuccess}
+        isError={isError}
+        handleOnClick={handleOnClick}
+      />
       <div className="mb-2" />
-      <Button type={ButtonType.SECONDARY} link={data.goodreadsUrl || ""}>
+      <Button fullWidth type={ButtonType.SECONDARY} link={data?.goodreadsUrl}>
         View on Goodreads
       </Button>
     </div>

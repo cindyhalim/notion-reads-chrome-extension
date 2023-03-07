@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@tanstack/react-query": "^4.26.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1"
@@ -32,13 +33,13 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.0.0",
     "@types/chrome": "^0.0.218",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.13",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "tailwindcss": "^3.2.7",
-    "typescript": "^4.9.5",
-    "@craco/craco": "^7.0.0"
+    "typescript": "^4.9.5"
   }
 }
