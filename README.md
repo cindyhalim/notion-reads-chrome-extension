@@ -15,4 +15,4 @@ save books you find on the web to your notion reads list. under the hood, it loo
 
 ### demo:
 
-![video-demo](https://user-images.githubusercontent.com/52426595/223864313-3fd2d4d7-7406-4c6a-9c23-91c2bb4c5802.gif)
+![video-demo](https://user-images.githubusercontent.com/52426595/223865667-a1268265-c541-4deb-9a4a-87c373904fbf.gif)
