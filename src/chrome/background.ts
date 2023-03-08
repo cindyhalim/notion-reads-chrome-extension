@@ -13,7 +13,7 @@ const filter = {
 };
 
 async function storeISBNInStorage(tabId: number, isbn: string | null) {
-  await chrome.storage.local.set({ [`${tabId}`]: isbn });
+  await chrome.storage.session.set({ [`${tabId}`]: isbn });
 }
 
 chrome.webNavigation.onDOMContentLoaded.addListener(async function (data) {

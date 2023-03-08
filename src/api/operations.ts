@@ -1,4 +1,8 @@
-import { WORKSPACE_EMOJI_KEY, WORKSPACE_NAME_KEY } from "../utils/constants";
+import {
+  IS_LOWERCASE_KEY,
+  WORKSPACE_EMOJI_KEY,
+  WORKSPACE_NAME_KEY,
+} from "../utils/constants";
 import request from "../utils/request";
 import type {
   GetBookDetailsResponse,
@@ -60,7 +64,6 @@ async function getBookDetails(isbn: string | null) {
   );
 
   const bookDetails = response.data;
-  console.log("hii book details", bookDetails);
   return bookDetails;
 }
 
@@ -72,11 +75,25 @@ async function saveBookToReadList({
     throw Error("Missing databaseId parameter");
   }
 
+  const isLowercaseChecked = await chrome.storage.sync
+    .get(IS_LOWERCASE_KEY)
+    .then((value): boolean => value?.[IS_LOWERCASE_KEY] || false);
+
+  let requestBody = body;
+
+  if (isLowercaseChecked) {
+    requestBody = {
+      ...requestBody,
+      title: body.title.toLowerCase(),
+      author: body.author.toLowerCase(),
+    };
+  }
+
   const response = await request.fetch<SaveBookToReadListResponse>(
     `${serviceUrl}/read-list/${databaseId}/book`,
     {
       method: "PUT",
-      body,
+      body: requestBody,
     }
   );
 

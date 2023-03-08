@@ -13,7 +13,7 @@ export default function BookView({ databaseId }: BookViewProps) {
   React.useEffect(() => {
     async function getISBN(tabId: number) {
       const tabIdToString = `${tabId}`;
-      const ISBN = await chrome.storage.local
+      const ISBN = await chrome.storage.session
         .get(tabIdToString)
         .then((value): string | null => {
           if (value?.[tabIdToString] === "null") {
@@ -46,7 +46,7 @@ export default function BookView({ databaseId }: BookViewProps) {
   }
 
   return (
-    <div className="h-80 w-full flex justify-center items-center">
+    <div className="h-[80%]  w-full flex justify-center items-center">
       <BookFoundView ISBN={ISBN} databaseId={databaseId} />
     </div>
   );

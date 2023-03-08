@@ -26,8 +26,7 @@ export default function UnauthenticatedView() {
           <a
             target="_blank"
             rel="noreferrer"
-            // TODO: add template url
-            href=""
+            href="https://cindyhalim.notion.site/reading-list-template-602f353294734d8488e862621df209f0"
             className="hover:text-neutral-500 underline underline-offset-1"
           >
             this Notion reads template

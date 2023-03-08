@@ -8,7 +8,7 @@ function HeaderSkeleton() {
     <>
       <div className={`${commonStyles} w-[120px]`} />
       <Slash />
-      <div className={`${commonStyles} w-[80px]`} />
+      <div className={`${commonStyles} w-[120px]`} />
     </>
   );
 }

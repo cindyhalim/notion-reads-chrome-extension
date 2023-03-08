@@ -5,6 +5,7 @@ import operations from "../api/operations";
 
 import { BaseView, Button, ButtonType } from "../components";
 import Loading from "../components/Loading";
+import LoadingView from "../components/LoadingView";
 
 type BookFoundViewProps = {
   ISBN: string;
@@ -95,16 +96,8 @@ export default function BookFoundView({
   }
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col">
-        <Loading dimensions="80px" />
-        <p className="font-semibold text-sm text-neutral-900 mt-4">
-          🔍 Looking up book details
-        </p>
-      </div>
-    );
+    return <LoadingView>🔍 Looking up book details</LoadingView>;
   }
-  console.log("hii error", error);
 
   if (error) {
     return (
@@ -118,7 +111,7 @@ export default function BookFoundView({
   }
 
   return (
-    <div className="w-11/12 relative top-10 rounded-lg border px-5 pb-4 shadow-md">
+    <div className="w-11/12 relative rounded-lg border px-5 pb-4 shadow-md">
       <img
         src={data?.coverUrl}
         alt="book-cover"
