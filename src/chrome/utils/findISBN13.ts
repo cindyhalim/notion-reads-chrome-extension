@@ -23,9 +23,7 @@ function getDOMContent() {
  */
 function validateISBN13(possibleISBN13: string) {
   // strip all dash and spaces
-  const cleanedPossibleISBN13 = possibleISBN13
-    .replace("-", "")
-    .replace(" ", "");
+  const cleanedPossibleISBN13 = possibleISBN13.replace(/-|\s/g, "");
 
   const checkDigitIndex = cleanedPossibleISBN13.length - 1;
   const checkDigit = cleanedPossibleISBN13[checkDigitIndex];
