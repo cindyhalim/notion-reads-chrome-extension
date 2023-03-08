@@ -123,10 +123,12 @@ export default function BookFoundView({
           <h3 className="font-base text-base text-neutral-800 mb-1">
             {data?.author}
           </h3>
-          <p className="text-xs">
-            <span className="font-semibold">{data?.pages.toString()}</span>{" "}
-            pages
-          </p>
+          {data?.pages && (
+            <p className="text-xs">
+              <span className="font-semibold">{data.pages.toString()}</span>{" "}
+              pages
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap">
           {data?.genres.map((genre, idx) => (
