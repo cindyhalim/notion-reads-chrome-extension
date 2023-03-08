@@ -5,6 +5,7 @@
   "version": "1.0",
   "action": {
     "default_icon": "icon.png",
+    "default_title": "notion reads extension",
     "default_popup": "index.html"
   },
   "background": {
